@@ -6,7 +6,7 @@ Shell scripts are old, an incredibly powerful tool since they will work on almos
 
 I wanted to try my hand at generating bash from a python AST.
 
-This would be much simplier if I just put the expression into a single bash.
+This would be much simplier if I just put the expression into a single bash expression.
 
 ``` bash
 b=5
