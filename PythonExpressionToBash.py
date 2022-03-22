@@ -91,7 +91,7 @@ def visit_assign(assign: ast.Assign):
     if len(assign.targets) > 1:
         raise Exception("Multiple assignments not supported")
     
-    complexvalue = assign.value is not ast.Constant
+    complexvalue = type(assign.value) != ast.Constant
     
     id: ast.Name = assign.targets[0]
     if complexvalue:
@@ -121,8 +121,7 @@ def visit_unaryop(unaryop: ast.UnaryOp):
             |  BinOp
     """
 
-    complexoperand = unaryop.operand is not ast.Constant
-
+    complexoperand = type(unaryop.operand) != ast.Constant
     if complexoperand:
         visit(unaryop.operand)
         print("x=$(( ", end="")
