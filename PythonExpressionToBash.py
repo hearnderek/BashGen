@@ -53,28 +53,28 @@ def PythonExpressionToRegisterBash(expr: str):
 
 def visit(node):
     
-    node_type = str(type(node))
+    node_type = type(node)
     # print()
     # print(str(type(node)))
 
     visit_switch = {
-        "<class 'ast.Module'>": visit_module,
-        "<class 'list'>": visit_list,
-        "<class 'ast.Assign'>": visit_assign,
-        "<class 'ast.Expr'>": visit_expr,
-        "<class 'ast.Name'>": visit_name,
-        "<class 'ast.UnaryOp'>": visit_unaryop,
-        "<class 'ast.USub'>": visit_usub,   
-        "<class 'ast.UAdd'>": visit_uadd,   
-        "<class 'ast.BinOp'>": visit_binop,
-        "<class 'ast.Add'>": visit_opadd,
-        "<class 'ast.Sub'>": visit_opsub,
-        "<class 'ast.Mult'>": visit_opmult,
-        "<class 'ast.Div'>": visit_opdiv,
-        "<class 'ast.FloorDiv'>": visit_opfloordiv,
-        "<class 'ast.Pow'>": visit_oppow,
-        "<class 'ast.Mod'>": visit_opmod,
-        "<class 'ast.Constant'>": visit_constant
+        ast.Module: visit_module,
+        list: visit_list,
+        ast.Assign: visit_assign,
+        ast.Expr: visit_expr,
+        ast.Name: visit_name,
+        ast.UnaryOp: visit_unaryop,
+        ast.USub: visit_usub,   
+        ast.UAdd: visit_uadd,   
+        ast.BinOp: visit_binop,
+        ast.Add: visit_opadd,
+        ast.Sub: visit_opsub,
+        ast.Mult: visit_opmult,
+        ast.Div: visit_opdiv,
+        ast.FloorDiv: visit_opfloordiv,
+        ast.Pow: visit_oppow,
+        ast.Mod: visit_opmod,
+        ast.Constant: visit_constant
     }
 
     visit_switch[node_type](node)
@@ -91,7 +91,7 @@ def visit_assign(assign: ast.Assign):
     if len(assign.targets) > 1:
         raise Exception("Multiple assignments not supported")
     
-    complexvalue = str(type(assign.value)) != "<class 'ast.Constant'>"
+    complexvalue = assign.value is not ast.Constant
     
     id: ast.Name = assign.targets[0]
     if complexvalue:
@@ -121,7 +121,7 @@ def visit_unaryop(unaryop: ast.UnaryOp):
             |  BinOp
     """
 
-    complexoperand = str(type(unaryop.operand)) != "<class 'ast.Constant'>"
+    complexoperand = unaryop.operand is not ast.Constant
 
     if complexoperand:
         visit(unaryop.operand)
@@ -153,8 +153,8 @@ def visit_binop(binop: ast.BinOp):
           |  ast.UnaryOp
           ;
     """
-    complexleft = not str(type(binop.left)) in ("<class 'ast.Constant'>", "<class 'ast.Name'>")
-    complexright = not str(type(binop.right)) in ("<class 'ast.Constant'>", "<class 'ast.Name'>")
+    complexleft = not type(binop.left) in (ast.Constant, ast.Name)
+    complexright = not type(binop.right) in (ast.Constant, ast.Name)
     
 
     if complexleft and complexright:
